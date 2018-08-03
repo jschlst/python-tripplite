@@ -11,7 +11,7 @@
 	--cycle=[all|outlet_num]
 	--power_on=[all|outlet_num]
 	--power_off=[all|outlet_num]
-	--identify
+	--identity
 
 Example:
     This will print information about the given PDU:
@@ -41,9 +41,15 @@ COMMAND_PROMPT = '>> '
 SSH_NEWKEY = '(?i)are you sure you want to continue connecting'
 
 def exit_with_usage():
-
     print(globals()['__doc__'])
     os._exit(1)
+
+
+def send_command(child, number=None):
+    child.sendline(number)
+    child.expect(COMMAND_PROMPT)
+    print(child.before)
+
 
 def main():
 
@@ -130,66 +136,56 @@ def main():
     # Status Menu
     if status:
 	print('status')
-	child.sendline ('1')
-	child.expect (COMMAND_PROMPT)
-	print(child.before)
+	send_command(child, '1')
     elif cycle != None:
 	print('cycle: %s'%(cycle))
-        child.sendline ('3')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
-	# cycle all loads
-        child.sendline ('6')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
-	child.sendline ('Y')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
+	if cycle == 'all':
+	    # cycle all loads
+	    send_command(child, '3')
+	    send_command(child, '6')
+	else:
+	    # cycle specific outlet
+	    send_command(child, '5')
+	    send_command(child, '1')
+	    send_command(child, cycle)
+	    send_command(child, '4')
+	send_command(child, 'Y')
 
     elif power_on != None:
 	print('power_on: %s'%(power_on))
-        child.sendline ('3')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
-        # Turn all loads on
-        child.sendline ('9')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
-        child.sendline ('Y')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
+	if power_on == 'all':
+	    # power on all loads
+	    send_command(child, '3')
+	    send_command(child, '9')
+	else:
+	    # power on specific outlet
+            send_command(child, '5')
+            send_command(child, '1')
+            send_command(child, power_on)
+            send_command(child, '3')
+	send_command(child, 'Y')
 
     elif power_off != None:
 	print('power_off: %s'%(power_off))
-        child.sendline ('3')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
+	if power_off == 'all':
+	    # power off all loads
+	    send_command(child, '3')
+	    send_command(child, '5')
+	else:
+	    # power off specific outlet
+	    send_command(child, '5')
+            send_command(child, '1')
+            send_command(child, power_off)
+            send_command(child, '3')
+	send_command(child, 'Y')
 
-        # Turn all loads off
-        child.sendline ('5')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
-
-        child.sendline ('Y')
-        child.expect (COMMAND_PROMPT)
-        print(child.before)
     elif identity != None:
 	print('identity: %s'%(identity))
-        child.sendline ('2')
-        child.expect (COMMAND_PROMPT)
+	send_command(child, '2')
         print(child.before)
 
-
     # Now exit the remote host.
-    child.sendline ('M')
-    child.expect (COMMAND_PROMPT)
-    #print(child.before)
-
+    send_command(child, 'M')
     child.sendline ('Q')
     #print(child.before)
     child.expect(pexpect.EOF)
