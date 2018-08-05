@@ -2,6 +2,10 @@
 
 ''' This runs a sequence of commands on a remote PDU using SSH.
 
+Written by Jay Schulist <jayschulist@gmail.com>
+Version 0.0.9
+Date 08/05/2018
+
 ./python-tripplite.py -h [ip_address] -u [username] -p [password] --[command]
     -h : hostname of the PDU unit to login to
     -u : username to use for login
@@ -65,7 +69,6 @@ def main():
     options = dict(optlist)
     if len(args) > 3:
         exit_with_usage()
-    print(options)
 
     if '-h' in options:
         host = options['-h']
@@ -128,10 +131,7 @@ def main():
     # Now we should be at the command prompt and ready to run some commands.
 
     # Devices Menu
-    child.sendline ('1')
-    child.expect (COMMAND_PROMPT)
-    #print(child.before)
-
+    send_command(child, '1')
 
     # Status Menu
     if status:
@@ -180,14 +180,12 @@ def main():
 	send_command(child, 'Y')
 
     elif identity != None:
-	print('identity: %s'%(identity))
+	print('identity')
 	send_command(child, '2')
-        print(child.before)
 
     # Now exit the remote host.
     send_command(child, 'M')
     child.sendline ('Q')
-    #print(child.before)
     child.expect(pexpect.EOF)
 
 if __name__ == "__main__":
