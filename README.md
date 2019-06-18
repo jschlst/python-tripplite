@@ -1,10 +1,11 @@
 # python-tripplite
 
-Tripp Lite PDU control using a python script
+
+Tripp Lite Power Distribution Unit (PDU) control using python script
 
 Written by Jay Schulist <jayschulist@gmail.com>
-Version 0.1.0
-Date 05/27/2019
+Version 0.1.1
+Date 06/18/2019
 
 ./python-tripplite.py -h [hostname] -u [username] -p [password] --[command]
     -h : hostname of the PDU unit to login to
