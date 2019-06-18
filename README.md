@@ -10,7 +10,7 @@ Date 06/18/2019
 
 
 ## Example
-'''
+```
 ./tripplite.py -h [hostname] {-u [username] -p [password]} --[command]
     -h : hostname of the PDU unit to login
     -u : username to use for login (optional then default used)
@@ -43,4 +43,5 @@ Example(s):
         python tripplite.py -h pdu-e04 -u localadmin -p localadmin --on=all
 
 Log output of command execution located at /tmp/tripplite.log
-'''
+```
+
