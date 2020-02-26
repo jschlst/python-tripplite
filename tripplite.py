@@ -41,10 +41,6 @@ Example(s):
 Log output of command execution located at /tmp/tripplite.log
 """
 
-from __future__ import print_function
-
-from __future__ import absolute_import
-
 import getopt
 # import getpass
 import os
@@ -68,7 +64,7 @@ class Tripplite(object):
     def connect(self):
         # Login via telnet (SSH doesn't work with pexpect)
         try:
-            self.tel = pexpect.spawn('telnet %s' % self.hostname)
+            self.tel = pexpect.spawn('telnet %s' % self.hostname, encoding='utf-8')
         except:
             raise Exception("Unable to connect to PDU %s" % self.hostname)
 
@@ -130,13 +126,7 @@ class Tripplite(object):
         self.close()
 
     def __repr__(self):
-        return('PDU connect by telnet to %s@%s' % (self.username, self.hostname))
-
-
-try:
-    raw_input
-except NameError:
-    raw_input = input
+        return f'PDU connect by telnet to {self.username}@{self.hostname}'
 
 
 def exit_with_usage():
@@ -161,7 +151,7 @@ def main():
     if '-h' in options:
         hostname = options['-h']
     else:
-        hostname = raw_input('hostname: ')
+        hostname = input('hostname: ')
     if '-u' in options:
         username = options['-u']
     else:
