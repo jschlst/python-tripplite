@@ -74,7 +74,7 @@ class Tripplite(object):
 
         try:
             self.tel.logfile = open(self.LOGFILE, 'w')
-            self.tel.expect('Username: ', timeout=self.COMMAND_TIMEOUT)
+            self.tel.expect('^.* login: ', timeout=self.COMMAND_TIMEOUT)
             self.tel.sendline('%s' % self.username)
             self.tel.expect('Password: ', timeout=self.COMMAND_TIMEOUT)
             self.tel.sendline('%s' % self.password)
