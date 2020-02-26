@@ -54,9 +54,9 @@ import pexpect
 class Tripplite(object):
     COMMAND_PROMPT = '>> '
     COMMAND_TIMEOUT = 100
-    LOGFILE = "/tmp/tripplite.log"
+    LOGFILE = '/tmp/tripplite.log'
 
-    def __init__(self, hostname, username="localadmin", password="localadmin"):
+    def __init__(self, hostname, username='localadmin', password='localadmin'):
         self.hostname = hostname
         self.username = username
         self.password = password
@@ -64,9 +64,9 @@ class Tripplite(object):
     def connect(self):
         # Login via telnet (SSH doesn't work with pexpect)
         try:
-            self.tel = pexpect.spawn('telnet %s' % self.hostname, encoding='utf-8')
+            self.tel = pexpect.spawn(f'telnet {self.hostname}', encoding='utf-8')
         except:
-            raise Exception("Unable to connect to PDU %s" % self.hostname)
+            raise Exception(f'Unable to connect to PDU {self.hostname}')
 
         try:
             self.tel.logfile = open(self.LOGFILE, 'w')
@@ -75,7 +75,7 @@ class Tripplite(object):
             self.tel.expect('Password: ', timeout=self.COMMAND_TIMEOUT)
             self.tel.sendline('%s' % self.password)
         except:
-            raise Exception("Unable to login")
+            raise Exception('Unable to login')
 
         # Now at the devices command prompt and ready to run some commands.
         self.tel.expect(self.COMMAND_PROMPT)
@@ -155,13 +155,13 @@ def main():
     if '-u' in options:
         username = options['-u']
     else:
-        username = "localadmin"
-        print("Using default username: %s" % username)
+        username = 'localadmin'
+        print(f'Using default username: {username}')
     if '-p' in options:
         password = options['-p']
     else:
-        password = "localadmin"
-        print("Using default password: %s" % password)
+        password = 'localadmin'
+        print(f'Using default password: {password}')
 
     # takes one command per execution, the first match
     # --status
@@ -195,18 +195,18 @@ def main():
 
     # status
     if status:
-        print('Status: %s' % hostname)
+        print(f'Status: {hostname}')
         output_status = pdu.status()
         print(output_status)
 
     elif reboot:
-        print('Rebooting ALL loads on %s... ' % hostname, end='')
+        print(f'Rebooting ALL loads on {hostname}... ', end='')
         sys.stdout.flush()
         pdu.cycle()
         print('done')
 
     elif force:
-        print('Force off ALL loads on %s... ' % hostname, end='')
+        print(f'Force off ALL loads on {hostname}... ', end='')
         sys.stdout.flush()
         pdu.off()
         pdu.close()
@@ -218,7 +218,7 @@ def main():
         print('done')
 
         pdu.connect()
-        print('Force on ALL loads on %s... ' % hostname, end='')
+        print(f'Force on ALL loads on {hostname}... ', end='')
         sys.stdout.flush()
         pdu.on()
         print('done')
@@ -227,18 +227,18 @@ def main():
     elif cycle is not None:
         if 'all' in cycle:
             # cycle all loads
-            print('Cycling ALL loads on %s... ' % hostname, end='')
+            print(f'Cycling ALL loads on {hostname}... ', end='')
             sys.stdout.flush()
             pdu.cycle()
             print('done')
         else:
             # cycle specific outlet
-            print('Cycle load on outlet: %s' % cycle)
+            print(f'Cycle load on outlet: {cycle}')
 
     elif power_on is not None:
         if 'all' in power_on:
             # power on all loads
-            print('Power on ALL loads on %s... ' % hostname, end='')
+            print(f'Power on ALL loads on {hostname}... ', end='')
             sys.stdout.flush()
             pdu.on()
             print('done')
@@ -249,7 +249,7 @@ def main():
     elif power_off is not None:
         if 'all' in power_off:
             # power off all loads
-            print('Power off ALL loads on %s... ' % hostname, end='')
+            print(f'Power off ALL loads on {hostname}... ', end='')
             sys.stdout.flush()
             pdu.off()
             print('done')
