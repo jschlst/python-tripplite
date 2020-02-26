@@ -1,3 +1,7 @@
 build/
 dist/
 python_tripplite.egg-info/
+# PyCharm project folder
+.idea/
+# Pipenv
+Pipfile*
