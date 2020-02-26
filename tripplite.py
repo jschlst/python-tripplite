@@ -54,7 +54,7 @@ import pexpect
 class Tripplite(object):
     COMMAND_PROMPT = '>> '
     COMMAND_TIMEOUT = 100
-    LOGFILE         = "/tmp/tripplite.log"
+    LOGFILE = "/tmp/tripplite.log"
 
     def __init__(self, hostname, username="localadmin", password="localadmin"):
         self.hostname = hostname
