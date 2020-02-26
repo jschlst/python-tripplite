@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-''' 
+"""
 Tripp Lite Power Distribution Unit (PDU) control using python script
 
 Written by Jay Schulist <jayschulist@gmail.com>
@@ -12,12 +12,12 @@ Date 06/18/2019
     -u : username to use for login (optional then default used)
     -p : Password to use for login (optional then default used)
     --[command] : one of the following
-	--status
+    --status
         --reboot
         --force
-	--cycle=[all|outlet_num]
-	--on=[all|outlet_num]
-	--off=[all|outlet_num]
+    --cycle=[all|outlet_num]
+    --on=[all|outlet_num]
+    --off=[all|outlet_num]
 
 Example(s):
     Cycle all outlets on the given PDU using default login credentials:
@@ -39,7 +39,7 @@ Example(s):
         python tripplite.py -h pdu-e04 -u localadmin -p localadmin --on=all
 
 Log output of command execution located at /tmp/tripplite.log
-'''
+"""
 
 from __future__ import print_function
 
@@ -50,8 +50,9 @@ import pexpect
 import time
 
 
-class tripplite(object):
-    COMMAND_PROMPT  = '>> '
+
+class Tripplite(object):
+    COMMAND_PROMPT = '>> '
     COMMAND_TIMEOUT = 100
     LOGFILE         = "/tmp/tripplite.log"
 
@@ -118,7 +119,7 @@ class tripplite(object):
         # Now exit the remote host and close the connection.
         self.tel.sendline('M')
         self.tel.expect(self.COMMAND_PROMPT, timeout=self.COMMAND_TIMEOUT)
-        self.tel.sendline ('Q')
+        self.tel.sendline('Q')
         self.tel.close()
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -140,7 +141,7 @@ def exit_with_usage():
 
 
 def main():
-    forceTimeout = 10 * 60
+    force_timeout = 10 * 60
 
     # Parse the options, arguments
     try:
@@ -151,7 +152,7 @@ def main():
     options = dict(optlist)
     if len(args) > 3:
         exit_with_usage()
-    #print(options)
+    # print(options)
 
     if '-h' in options:
         hostname = options['-h']
@@ -166,28 +167,27 @@ def main():
         password = options['-p']
     else:
         password = "localadmin"
-        print("Using defualt password: %s" % password)
-
+        print("Using default password: %s" % password)
 
     # takes one command per execution, the first match
     # --status
     # --force
     # --reboot
     # --[cycle|power_on|power_off]=[all|1-24]
-    status    = False
-    cycle     = None 
-    power_on  = None 
+    status = False
+    cycle = None
+    power_on = None
     power_off = None
-    force     = False
-    reboot    = False
+    force = False
+    reboot = False
     if '--status' in options:
-	status = True
+        status = True
     elif '--cycle' in options:
-	cycle = options['--cycle']
+        cycle = options['--cycle']
     elif '--on' in options:
-	power_on = options['--on']
+        power_on = options['--on']
     elif '--off' in options:
-	power_off = options['--off']
+        power_off = options['--off']
     elif '--force' in options:
         force = True
     elif '--reboot' in options:
@@ -195,8 +195,7 @@ def main():
     else:
         exit_with_usage()
 
-
-    pdu = tripplite(hostname, username, password)
+    pdu = Tripplite(hostname, username, password)
     print(pdu)
     pdu.connect()
 
@@ -219,9 +218,9 @@ def main():
         pdu.close()
         print('done')
 
-        print('Sleeping for %d minutes... ' % (forceTimeout / 60), end='')
+        print('Sleeping for %d minutes... ' % (force_timeout / 60), end='')
         sys.stdout.flush()
-        time.sleep(forceTimeout)
+        time.sleep(force_timeout)
         print('done')
 
         pdu.connect()
@@ -231,38 +230,39 @@ def main():
         print('done')
 
     # cycle outlets
-    elif cycle != None:
-	if 'all' in cycle:
-	    # cycle all loads
+    elif cycle is not None:
+        if 'all' in cycle:
+            # cycle all loads
             print('Cycling ALL loads on %s... ' % hostname, end='')
             sys.stdout.flush()
             pdu.cycle()
             print('done')
-	else:
-	    # cycle specific outlet
+        else:
+            # cycle specific outlet
             print('Cycle load on outlet: %s' % cycle)
 
-    elif power_on != None:
-	if 'all' in power_on:
-	    # power on all loads
+    elif power_on is not None:
+        if 'all' in power_on:
+            # power on all loads
             print('Power on ALL loads on %s... ' % hostname, end='')
             sys.stdout.flush()
             pdu.on()
             print('done')
-	else:
-	    # power on specific outlet
+        else:
+            # power on specific outlet
             print("Power on outlet")
 
-    elif power_off != None:
-	if 'all' in power_off:
-	    # power off all loads
+    elif power_off is not None:
+        if 'all' in power_off:
+            # power off all loads
             print('Power off ALL loads on %s... ' % hostname, end='')
             sys.stdout.flush()
             pdu.off()
             print('done')
-	else:
-	    # power off specific outlet
+        else:
+            # power off specific outlet
             print("Power off outlet")
+
 
 if __name__ == "__main__":
     main()
