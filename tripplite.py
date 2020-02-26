@@ -45,10 +45,14 @@ from __future__ import print_function
 
 from __future__ import absolute_import
 
-import os, sys, re, getopt, getpass
-import pexpect
+import getopt
+# import getpass
+import os
+# import re
+import sys
 import time
 
+import pexpect
 
 
 class Tripplite(object):
